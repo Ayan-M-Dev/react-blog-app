@@ -1,7 +1,24 @@
 import { View, Image, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
  
 const IndexPage = ({navigation}) => {
+    const [blogData, setBlogData] = useState([])
+ 
+  const getBlogs = async () => {
+    let blogs = await AsyncStorage.getItem('blogs');
+    blogs = JSON.parse(blogs) || [];
+    setBlogData(blogs);
+  }
+ 
+  useEffect(() => {
+    const subscriber = navigation.addListener('focus', () => {
+      getBlogs();
+    });
+    return subscriber;
+  }, [])
+
   return (
     <View>
       <Image
