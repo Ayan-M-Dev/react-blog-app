@@ -1,10 +1,21 @@
-import { View, Image, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { FontAwesome5 } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
+import {
+  Text, 
+  View, 
+  StyleSheet, 
+  Image, 
+  TouchableOpacity, 
+  ScrollView
+} from 'react-native';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
- 
-const IndexPage = ({navigation}) => {
-    const [blogData, setBlogData] = useState([])
+
+// Icons
+import { FontAwesome5 } from '@expo/vector-icons';
+
+export default function IndexPage({navigation}) {
+
+  const [blogData, setBlogData] = useState([])
  
   const getBlogs = async () => {
     let blogs = await AsyncStorage.getItem('blogs');
@@ -21,25 +32,41 @@ const IndexPage = ({navigation}) => {
 
   return (
     <View>
-      <Image
+      <Image 
         source={require('../assets/header.jpg')}
         style={styles.images}
       />
-      <Text style={styles.headerTitle}>Stackie's Blog</Text>
-        <View style={styles.container}>
-            {/* New Blog Entry Button */}
-            <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('BlogPage')}
-            >
-            <FontAwesome5 name="sticky-note" size={24} color="white" />
-            <Text style={styles.buttonText}>New Blog Entry</Text>
-            </TouchableOpacity>
-        </View>
+      <Text style={styles.headerTitle}>
+        Retr0's Blog
+      </Text>
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('BlogPage')}
+        >
+          <FontAwesome5 name="sticky-note" size={24} color="white" />
+          <Text style={styles.buttonText}>New Blog Entry</Text>
+        </TouchableOpacity>
+        <ScrollView>
+          {blogData&&blogData.map((blog) => {
+            return (
+              <TouchableOpacity
+                key={blog.id}
+                style={{ marginTop:10, backgroundColor:"white", borderRadius: 10, padding:10}}
+                onPress={() => navigation.navigate('BlogPage', { blog: blog })}
+              >
+                <Text style={{ fontSize: 15, fontWeight:"bold"}}>{blog.title}</Text>
+                <Text style={{ }}>{blog.content}</Text>
+              </TouchableOpacity>
+            )
+          })}
+ 
+        </ScrollView>
+      </View>
     </View>
   );
 }
- 
+
 const styles = StyleSheet.create({
   images: {
     width: '100%',
@@ -79,5 +106,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#031031',
   },
 });
- 
-export default IndexPage;
